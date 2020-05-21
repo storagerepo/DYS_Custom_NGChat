@@ -1,0 +1,688 @@
+<div class="col-12" [class]="theme" id="wrapper">
+  <div class="row">
+    <div class="col-xl-3 col-xs-12 col-sm-12 bgSideBarThemeColor" id="sidebar-wrapper">
+      <button type="button" class="close d-md-none d-block" (click)="toggleSideBar()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="row mt-3 ">
+        <div class="offset-md-1 col-2">
+          <div class="dropdown">
+            <img [src]="userProfilePic" type="button" class="btn-circle btn-circle-sm status"
+              [ngClass]="{'border-success': status == 1,'border-secondary': status == 0,'border-danger': status == 2}"
+              id="dropdownMenu2" data-display="static" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+            <div class="dropdown-menu " aria-labelledby="dropdownMenu2">
+              <button class="dropdown-item" type="button" (click)="status = 1;"><i
+                  class="mdi mdi-checkbox-blank-circle text-success mr-2"></i>Available</button>
+              <button class="dropdown-item" type="button" (click)="status = 0;"><i
+                  class="mdi mdi-checkbox-blank-circle text-secondary mr-2 "></i>away</button>
+              <button class="dropdown-item" type="button" (click)="status = 2;"><i
+                  class="mdi mdi-checkbox-blank-circle text-danger mr-2"></i>Do not disturb</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <p>{{username}} <br /> <small class="text-muted">{{userMood}}</small></p>
+        </div>
+        <div class="col-3">
+          <div class="dropdown dropright">
+            <i class="mdi mdi-account-cog float-right p-0 mdi-24px" type="button" id="dropdownMenu2"
+              data-display="static" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              aria-hidden="true"></i>
+
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenu2">
+              <button class="dropdown-item" type="button" *ngIf='defaulttheme' (click)="switchTheme()"> <i
+                  class="mdi mdi-theme-light-dark mdi-18px mr-2"></i>Dark Mode</button>
+              <button class="dropdown-item" type="button" *ngIf='!defaulttheme' (click)="defaultTheme()"> <i
+                  class="mdi mdi-theme-light-dark mdi-18px mr-2"></i>Default mode</button>
+              <button class="dropdown-item" type="button" data-toggle="modal" data-target="#colorPickerModal"><i
+                  class="mdi mdi-palette mdi-18px mr-2"></i>Custom Theme</button>
+
+              <div class="dropdown">
+                <button class="dropdown-item dropdown-toggle" type="button" data-display="static" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false" id="dateFormat"><i
+                    class="mdi mdi-calendar-month mdi-18px mr-2"></i>Change Date Format</button>
+
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dateFormat">
+                  <button class="dropdown-item" type="button" (click)="changeDateFormat('DD/MM/YY',previousFormat)">
+                    Default</button>
+                  <button class="dropdown-item" type="button" (click)="changeDateFormat('L',previousFormat)">
+                    05/14/2020</button>
+                  <button class="dropdown-item" type="button" (click)="changeDateFormat('LL',previousFormat)"> May 18,
+                    2020</button>
+                </div>
+              </div>
+
+              <div class="dropdown">
+                <button class="dropdown-item dropdown-toggle" type="button" data-display="static" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="false" id="timeFormat"><i
+                    class="mdi mdi-clock mdi-18px mr-2"></i>Change
+                  Time Format</button>
+
+                <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="timeFormat">
+                  <button class="dropdown-item" type="button" (click)="changeTimeFormat('hh:mm:A')"> 12hrs
+                    Format</button>
+                  <button class="dropdown-item" type="button" (click)="changeTimeFormat('HH:mm:A')"> 24hrs
+                    Format</button>
+                </div>
+              </div>
+              <input class="d-none" #profile type="file" accept='image/*' (change)="uploadProfilePic(profile.files)" />
+              <button class="dropdown-item" type="button" (click)="profile.click()"><i
+                  class="mdi mdi-account-circle mdi-18px mr-2"></i>Change Profile Picture </button>
+              <button class="dropdown-item" type="button"><i class="mdi mdi-logout mdi-18px mr-2"></i>Sign Out </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="input-group mt-3 ">
+        <input type="text" class="form-control" [(ngModel)]="searchInput" placeholder="People & messages">
+        <div class="input-group-append">
+          <span class="input-group-text" id="basic-addon1"><i class="mdi mdi-magnify"></i></span>
+        </div>
+      </div>
+
+      <div class="border-bottom border-dark ">
+        <div class="col-12 mt-3 pl-0">
+          <div class="row ">
+            <div class="col-3">
+              <a class="sub-menu" (click)="changeListShowData(1)">
+                <i class="mdi mdi-comment-text-outline" [ngClass]="{'active': showChat == true}"></i>
+                <span class="menu-title" [ngClass]="{'active': showChat == true}">Chats</span>
+              </a>
+            </div>
+            <a class="col-3">
+              <div class="sub-menu" (click)="changeListShowData(2)">
+                <i class="mdi mdi-phone" [ngClass]="{'active': showCalls == true}"></i>
+                <span class="menu-title" [ngClass]="{'active': showCalls == true}">Calls</span>
+              </div>
+            </a>
+            <a class="col-3">
+              <div class="sub-menu" (click)="changeListShowData(3)">
+                <i class="mdi mdi-account-box-outline" [ngClass]="{'active': showContacts == true}"></i>
+                <span class="menu-title" [ngClass]="{'active': showContacts == true}">Contacts</span>
+              </div>
+            </a>
+            <a class="col-3">
+              <div class="sub-menu" (click)="changeListShowData(4)">
+                <i class="mdi mdi-bell-ring-outline" [ngClass]="{'active': showNotification == true}"></i>
+                <span class="menu-title" [ngClass]="{'active': showNotification == true}">Notifications</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="showChat">
+        <div class="pt-3 pl-3 row  ">
+          <button class="btn bg-white badge-pill col-xl-5 mr-2" type="button"><i class="mdi mdi-video mdi-18px mr-2"
+              aria-hidden="true"></i>Meet Now</button>
+          <button class="btn bg-white badge-pill col-xl-6 mt-2 mt-xl-0" type="button" data-toggle="modal"
+            data-target="#exampleModalCenter"><i class="mdi mdi-comment-text-outline mdi-18px mr-2"
+              aria-hidden="true"></i>New
+            Chat</button>
+        </div>
+        <p class="text-muted mb-2 mt-3 font-weight-bold">Recent Chats&nbsp;&nbsp;
+          <i class="mdi mdi-chevron-down mdi-18px"></i>
+        </p>
+        <div>
+          <div class="recentwidth" id="recents">
+            <ng-container *ngFor="let rec of userData.contacts;let i = index;">
+              <div class="row mb-2 hover" (click)="loadMessages(i);">
+                <div class="col-2">
+                  <img [src]="rec.contactpic" class="btn-circle">
+                </div>
+                <div class="col-6">
+                  <p>{{rec.contactsName}}<br /> <small
+                      class="text-muted">{{rec.messages[rec.messages.length - 1].messageGroup[rec.messages[rec.messages.length - 1].messageGroup.length - 1].message}}</small>
+                  </p>
+                </div>
+                <div class="col-4 pr-3">
+                  <span class="text-muted float-right small">{{rec.messages[rec.messages.length - 1].date}}</span><br />
+                  <span class="badge badge-danger float-right"
+                    *ngIf="rec.notificationCount !=0">{{rec.notificationCount}}</span>
+                </div>
+              </div>
+
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showCalls">
+        <div class="pt-3 pl-3 row  ">
+          <button class="btn bg-white badge-pill col-xl-5 mr-2" type="button"><i class="mdi mdi-video mdi-18px mr-2"
+              aria-hidden="true"></i>Meet Now</button>
+          <button class="btn bg-white badge-pill col-xl-6 mt-2 mt-xl-0" type="button" data-toggle="modal"
+            data-target="#exampleModalCenter"><i class="mdi mdi-phone-plus mdi-18px mr-2" aria-hidden="true"></i>New
+            Call</button>
+        </div>
+        <p class="text-muted mb-2 mt-3 font-weight-bold">Recent Calls &nbsp;&nbsp;<i
+            class="mdi mdi-chevron-down mdi-18px"></i></p>
+
+        <div>
+          <div class="recentwidth" id="recents">
+            <ng-container *ngFor="let rec of userData.contacts;let i = index;">
+              <div class="row mb-2 hover" (click)="loadMessages(i);">
+                <div class="col-2">
+                  <img [src]="rec.contactpic" class="btn-circle">
+                </div>
+                <div class="col-6">
+                  <p>{{rec.contactsName}}<br />
+                    <small>
+                      <span *ngIf="rec.calls[rec.calls.length - 1].type == 'missed'">
+                        <span class="mdi mdi-phone-missed">&nbsp;Missed Call</span>
+                      </span>
+                      <span *ngIf="rec.calls[rec.calls.length - 1].type == 'outgoing'">
+                        <span class="mdi mdi-phone-outgoing">&nbsp;Outgoing Call</span>
+                      </span>
+                      <span *ngIf="rec.calls[rec.calls.length - 1].type == 'incoming'">
+                        <span class="mdi mdi-phone-incoming">&nbsp;Incoming Call</span>
+                      </span>
+                    </small>
+
+                    <!-- <small class="text-muted">{{rec.messages[rec.messages.length - 1].messageGroup[rec.messages[rec.messages.length - 1].messageGroup.length - 1].message}}</small> -->
+                  </p>
+                </div>
+                <div class="col-4 pr-3">
+                  <span class="text-muted float-right">{{rec.messages[rec.messages.length - 1].date}}</span><br />
+                  <!-- <span class="badge badge-danger float-right">1</span> -->
+                </div>
+              </div>
+
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="showContacts">
+        <div class="pt-3 pl-3 row  ">
+          <button class="btn bg-white badge-pill col-xl-12 mt-2 mt-xl-0 text-center" type="button" data-toggle="modal"
+            data-target="#exampleModalCenter"><i class="mdi mdi-account-plus mr-2" aria-hidden="true"></i>New
+            Contact</button>
+        </div>
+        <p class="text-muted mb-2 mt-3 font-weight-bold">My Contacts&nbsp;&nbsp;<i
+            class="mdi mdi-chevron-down mdi-18px"></i></p>
+
+        <div>
+          <div class="recentwidth" id="recents">
+            <ng-container *ngFor="let group of result;">
+              <h3>{{group.key}}</h3>
+              <ng-container *ngFor="let rec of group.contacts;let i = index;">
+                <div class="row mb-2 hover" (click)="loadMessages(i);">
+                  <div class="col-2">
+                    <img [src]="rec.contactpic" class="btn-circle">
+                  </div>
+                  <div class="col-6">
+                    <p>{{rec.contactsName}}<br /> <small
+                        class="text-muted">{{rec.messages[rec.messages.length - 1].messageGroup[rec.messages[rec.messages.length - 1].messageGroup.length - 1].message}}</small>
+                    </p>
+                  </div>
+                  <div class="col-4 p-0 ">
+                    <span class="text-muted">{{rec.messages[rec.messages.length - 1].date}}</span>
+                  </div>
+                </div>
+
+              </ng-container>
+            </ng-container>
+
+
+          </div>
+        </div>
+      </div>
+      <div *ngIf="showNotification">
+        <p class="text-muted mb-2 mt-3 font-weight-bold">Notifications &nbsp;&nbsp;<i
+            class="mdi mdi-chevron-down mdi-18px"></i></p>
+      </div>
+
+
+    </div>
+    <div class="col-lg-8 col-xl-9 col-md-6 bgThemeColor " id="welcomePage" *ngIf="WelcomePage">
+      <div class="container p-5 text-center">
+
+        <p><i class="mdi mdi-arrow-collapse-all mdi-18px d-md-none text-left d-block"
+            (click)="toggleSideBar()"></i><span class="h2 title">Welcome,&nbsp;{{username}}</span></p>
+        <div class="mb-3 social-profile">
+          <input class="d-none" #profilepic type="file" accept='image/*'
+            (change)="uploadProfilePic(profilepic.files)" />
+          <img [src]="userProfilePic" class="user-profile" (click)="profilepic.click()" alt="Cinque Terre">
+        </div>
+        <div class="mb-4 d-flex align-items-center">
+          <input type="text" readonly class="form-control text-center border-top-0 border-right-0 border-left-0"
+            [(ngModel)]="userMood" id="userMood" (focusout)="switchTypeOfStatusField(false);"
+            (click)="switchTypeOfStatusField(true)" placeholder="Tell your friends what you're up to">
+          <span id="input-icon" (click)="switchTypeOfStatusField(!editable)"
+            [ngClass]='editable ? "mdi mdi-check mdi-24px" : "mdi mdi-pencil mdi-24px"'></span>
+        </div>
+        <div class="mb-4">
+          <button type="button" class="btn badge-pill btn-dark" data-toggle="modal" data-target="#exampleModalCenter">
+            <b>&nbsp;&nbsp;&nbsp;Start
+              a
+              conversation&nbsp;&nbsp;&nbsp;</b> </button>
+        </div>
+        <div class="mb-4 text-muted">
+          <p>Search for someone to start chating with or go to <br /> Contacts to see who is available.</p>
+        </div>
+        <div class="mt-4">
+          <p class="font-weight-bold"> you are signed in as <i>samrajmanosingh@gmail.com</i></p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8 col-xl-9 col-md-6  bgThemeColor p-0 border-right" id="chatWindow" *ngIf="!WelcomePage">
+      <div class="p-3 border-bottom">
+        <div class="row ">
+          <div class="col-xl-8 col-md-12">
+            <div class="col-6">
+              <span><i class="mdi mdi-arrow-collapse-all mdi-18px d-md-none text-left d-block"
+                  (click)="toggleSideBar()"></i></span>
+            </div>
+            <div class="col-6">
+              <h3>{{username}}</h3>
+
+            </div>
+
+          </div>
+          <div class="col-xl-4 col-md-12">
+            <ul class="nav justify-content-lg-end justify-content-md-center ">
+              <li class="nav-item pr-3">
+                <button class="btn btn-light btn-circle nav-link"><i class="mdi mdi-video mdi-18px" aria-hidden="true"
+                    href="#"></i></button>
+              </li>
+              <li class="nav-item pr-3">
+                <button class="btn btn-light btn-circle nav-link"><i class="mdi mdi-phone mdi-18px" aria-hidden="true"
+                    href="#"></i></button>
+              </li>
+              <li class="nav-item pr-3">
+                <button class="btn btn-light btn-circle nav-link"><i class="mdi mdi-account-plus mdi-18px"
+                    aria-hidden="true" href="#"></i></button>
+              </li>
+              <li class="nav-item pr-3">
+                <button class="btn btn-light btn-circle nav-link"><i class="mdi mdi-star-outline mdi-18px"
+                    aria-hidden="true" href="#"></i></button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="chat-window p-4">
+        <div class="search-results" id="frame" infiniteScroll [infiniteScrollDistance]="2"
+          [infiniteScrollUpDistance]="1" [infiniteScrollThrottle]="300" (scrolled)="onScrollDown()"
+          (scrolledUp)="onScrollUp()" [scrollWindow]="false">
+          <div class="row ">
+            <div class="col-md-12 p-3">
+              <ngx-spinner bdOpacity=0.9 bdColor="" size="default" color="#581f87" type="ball-pulse-sync"
+                [fullScreen]="false">
+              </ngx-spinner>
+            </div>
+          </div>
+          <ng-container *ngFor="let msg of messages;let msgIndex = index;">
+            <div class="separator text-muted content">{{msg.date}}</div>
+            <ng-container *ngFor="let msgs of msg.messageGroup; let i = index;">
+              <div *ngIf="msgs.incomingMessage" id="receivedMessage" class="d-flex justify-content-start mb-4">
+                <div class="img_cont_msg">
+                  <img [src]="senderProfilePic" class="rounded-circle user_img_msg">
+                </div>
+                <div class="msg_cotainer" [id]="'msg' + i + msgIndex">
+                  <span *ngIf="msgs.type == 'text'">{{msgs.message}}</span>
+                  <span class="msg_time text-muted">
+                    <div class="dropup">
+                      <span id="messageOptions" data-display="static" type="button"
+                        class="mdi mdi-dots-horizontal mdi-24px msg_options text-muted" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"></span>
+                      <div class="dropdown-menu dropdown-menu-left" aria-labelledby="messageOptions">
+                        <button class="btn dropdown-item" type="button" data-toggle="modal" data-target="#forwardModal"
+                          (click)="storeTheMessage(msgs)"><i class="mdi mdi-share mdi-18px mr-2"></i>Forward
+                          Message</button>
+                        <button class="btn dropdown-item" type="button" (click)="deleteMessage(i,msgIndex)"><i
+                            class="mdi mdi-backspace mdi-18px mr-2"></i>Delete
+                          Message</button>
+                      </div>
+                    </div>
+                    {{msgs.formattedTime}}
+                  </span>
+                  <div *ngIf="msgs.type == 'link'">
+                    <span [innerHTML]=" msgs.message"></span>
+                    <a *ngFor="let link of msgs.urlmatches" target="_blank" rel="noopener noreferrer"
+                      [href]="sanitizeURL(link)" class="link-preview"></a>
+                  </div>
+
+                  <!-- <div *ngIf="msgs.type == 'image'">
+                  <img (click)="rec.click()" [src]="msgs.base64URL" class="img-fluid imagefixed">
+                  <a #rec class="d-none" [href]="msgs.base64URL" download="{{msgs.message}}"></a>
+                </div> -->
+                  <div *ngIf="msgs.type == 'image'">
+                    <img (click)="modalsrc=sanitizeURL(msgs.base64URL);" data-toggle="modal" data-target="#modalImage"
+                      [src]="sanitizeURL(msgs.base64URL)" class="img-fluid imagefixed">
+                  </div>
+                  <div *ngIf="msgs.type == 'video'">
+                    <video [src]="msgs.base64URL" class="imagefixed" controls></video>
+                  </div>
+
+                  <audio *ngIf="msgs.type == 'audio'" controls>
+                    <source type="audio/mpeg" [src]="sanitizeURL(msgs.base64URL)">
+                  </audio>
+
+                  <div *ngIf="msgs.type == 'pdf' ">
+                    <i class="mdi mdi-file-pdf mdi-48px text-danger " (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'html'">
+                    <i class="mdi mdi-language-html5 mdi-48px text-danger col-12" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == undefined ">
+                    <i class="mdi mdi-file-document-outline mdi-48px text-secondary" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.openxmlformats-officedocument.wordprocessingml.document' ">
+                    <i class="mdi mdi-file-word mdi-48px text-info" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' ">
+                    <i class="mdi mdi-file-excel mdi-48px text-success" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.ms-excel' ">
+                    <i class="mdi mdi-file-excel mdi-48px text-success" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'plain' || msgs.type == 'javascript'">
+                    <i class="mdi mdi-file-code-outline mdi-18px mdi-48px text-warning" (click)="docs.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+                  </div>
+                  <a #docs class="d-none" [href]="sanitizeURL(msgs?.base64URL)" download="{{msgs.message}}"></a>
+
+                </div>
+              </div>
+              <div class="d-flex justify-content-end mb-4" id="sendMessage" *ngIf="!msgs.incomingMessage">
+                <div class="msg_cotainer_send" [id]="'msg' + i + msgIndex">
+                  <span *ngIf="msgs.type == 'text'">{{msgs.message}}</span>
+                  <span class="msg_time_send text-muted">
+                    <div class="dropup">
+                      <span id="messageOptions" data-display="static" type="button"
+                        class="mdi mdi-dots-horizontal mdi-24px msg_options_send text-muted" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false"></span>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messageOptions">
+                        <button class="btn dropdown-item" type="button" data-toggle="modal" data-target="#forwardModal"
+                          (click)="storeTheMessage(msgs)"><i class="mdi mdi-share mdi-18px mr-2"></i>Forward
+                          Message</button>
+                        <button class="btn dropdown-item" type="button" (click)="deleteMessage(i,msgIndex)"><i
+                            class="mdi mdi-backspace mdi-18px mr-2"></i>Delete
+                          Message</button>
+                      </div>
+                    </div>
+                    {{msgs.formattedTime}}
+                  </span>
+                  <div *ngIf="msgs.type == 'link'">
+                    <span [innerHTML]=" msgs.message"></span>
+                    <a *ngFor="let link of msgs.urlmatches" target="_blank" rel="noopener noreferrer"
+                      [href]="sanitizeURL(link)" class="link-preview"></a>
+                  </div>
+                  <div *ngIf="msgs.type == 'image'">
+                    <img (click)="modalsrc=sanitizeURL(msgs.base64URL);" data-toggle="modal" data-target="#modalImage"
+                      [src]="sanitizeURL(msgs.base64URL)" class="img-fluid imagefixed">
+                  </div>
+
+                  <div *ngIf="msgs.type == 'video'">
+                    <video [src]="msgs.base64URL" class="imagefixed" controls></video>
+                  </div>
+
+                  <audio *ngIf="msgs.type == 'audio'" controls>
+                    <source type="audio/mpeg" [src]="sanitizeURL(msgs.base64URL)">
+                  </audio>
+
+                  <div *ngIf="msgs.type == 'pdf' ">
+                    <i class="mdi mdi-file-pdf mdi-48px text-danger " (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'html'">
+                    <i class="mdi mdi-language-html5 mdi-48px text-danger col-12" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == undefined ">
+                    <i class="mdi mdi-file-document-outline mdi-48px text-secondary" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.openxmlformats-officedocument.wordprocessingml.document' ">
+                    <i class="mdi mdi-file-word mdi-48px text-info" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.openxmlformats-officedocument.spreadsheetml.sheet' ">
+                    <i class="mdi mdi-file-excel mdi-48px text-success" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'vnd.ms-excel' ">
+                    <i class="mdi mdi-file-excel-outline mdi-48px text-success" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+
+                  </div>
+                  <div *ngIf="msgs.type == 'plain' || msgs.type == 'javascript'; ">
+                    <i class="mdi mdi-file-code-outline mdi-48px text-warning" (click)="docsend.click()"></i>
+                    <figcaption> {{msgs.message}} </figcaption>
+                  </div>
+
+                  <a #docsend class="d-none" [href]="sanitizeURL(msgs?.base64URL)" download="{{msgs.message}}"></a>
+
+                </div>
+                <div class="img_cont_msg">
+                  <img [src]="userProfilePic" class="rounded-circle user_img_msg">
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <emoji-mart [style]="{ position: 'absolute', bottom: '90px', left: '20px' }" (emojiClick)="addEmoji($event)"
+        *ngIf="showEmojiPicker" set="google"></emoji-mart>
+      <div class="p-3">
+        <div class="row">
+          <div class="input-group col-lg-8 col-md-10 col-10 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text badge-pill" id="basic-addon1"><i (click)="toggleEmojiPicker()"
+                  class="mdi mdi-emoticon-happy"></i></span>
+            </div>
+            <input type="text" class="form-control bg-light badge-pill" [(ngModel)]="message"
+              placeholder="Type a message" (keyup.enter)="sendMessage()">
+          </div>
+          <div class="col-lg-4 col-md-2 col-2">
+            <ul class="nav justify-content-lg-end justify-content-lg-center">
+              <li class="nav-item d-sm-none d-xs-none d-lg-block pr-3">
+                <button class="btn btn-light btn-circle nav-link" (click)="video.click()"><i
+                    class="mdi mdi-video mdi-24px" aria-hidden="true" href="#"></i></button>
+                <input class="d-none" #video type="file" accept='video/*' (change)="uploadFiles(video.files,0)" />
+              </li>
+              <li class="nav-item d-sm-none d-xs-none d-lg-block pr-3">
+                <button class="btn btn-light btn-circle nav-link" (click)="audio.click()"><i
+                    class="mdi mdi-file-music mdi-24px" aria-hidden="true" href="#"></i></button>
+                <input class="d-none" #audio type="file" accept='audio/*' (change)="uploadFiles(audio.files,0)" />
+              </li>
+              <li class="nav-item d-sm-none d-xs-none d-lg-block pr-3">
+                <input class="d-none" #image type="file" accept='image/*' (change)="uploadFiles(image.files,0)" />
+                <button class="btn btn-light btn-circle nav-link" (click)="image.click()" type="button"><i
+                    class="mdi mdi-image mdi-24px"></i></button>
+              </li>
+              <li class="nav-item d-lg-block">
+                <input class="d-none" #files type="file" (change)="uploadFiles(files.files,1)" />
+                <button class="btn btn-light btn-circle nav-link" (click)="files.click()" type="button"><i
+                    class="mdi mdi-file mdi-24px"></i></button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+      <br />
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Please select a contact<i
+            class="mdi mdi-account-box mdi-18pxml-2"></i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body py-0">
+        <div class="list-group list-group-flush">
+          <ng-container *ngFor="let rec of userData.contacts;let i = index;">
+            <div class="row">
+              <div></div>
+              <a (click)="loadMessages(i);" data-dismiss="modal" class="list-group-item list-group-item-action ">
+                <img [src]="rec.contactpic" class="btn-circle">
+                {{rec.contactsName}}
+              </a>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalImage" tabindex="-1" role="dialog" aria-labelledby="modalImage" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content border-0">
+      <div class="modal-header border-0">
+        <button type="button" class="btn btn-light text-muted order-0" (click)="modalimg.click()">
+          <i class="mdi mdi-arrow-down-bold-circle-outline mr-2"></i>Download
+        </button>
+        <a #modalimg [href]="modalsrc" class="d-none" download></a>
+        <button type="button" class="close order-1" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img [src]="modalsrc" class="img-fluid text-center">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="forwardModal" tabindex="-1" role="dialog" aria-labelledby="forwardModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Please select a contact<i
+            class="mdi mdi-account-box mdi-18pxml-2"></i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body py-0">
+        <div class="list-group list-group-flush">
+          <ng-container *ngFor="let rec of userData.contacts;let i = index;">
+            <div class="row">
+              <div></div>
+              <a (click)="forwardMessage(i);" data-dismiss="modal" class="list-group-item list-group-item-action ">
+                <img [src]="rec.contactpic" class="btn-circle">
+                {{rec.contactsName}}
+              </a>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="colorPickerModal" tabindex="-1" role="dialog" aria-labelledby="colorPickerModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Pick your colors <i
+            class="mdi mdi-palette mdi-18px ml-2"></i></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body  py-0">
+        <ul class="list-group list-group-flush ">
+          <div class="row">
+            <div class="col-9">
+              <li class=" list-group-item d-flex justify-content-between align-items-center ">Background Color<i
+                  class="cur-pointer mdi mdi-brush mdi-24px" [(colorPicker)]="bg_color" [cpCancelButton]="true"
+                  [cpCancelButtonClass]="'btn btn-primary btn-xs'" [style.color]="bg_color" [cpPosition]="'bottom'"
+                  [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"></i>
+              </li>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <button type="button" class="btn btn-sm btn-dark "
+                (click)="changeTheme('bg_color',bg_color)">Save</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-9">
+              <li class=" list-group-item d-flex justify-content-between align-items-center">SideBar Color<i
+                  class="cur-pointer mdi mdi-brush mdi-24px" [(colorPicker)]="sidebar_color" [cpCancelButton]="true"
+                  [cpCancelButtonClass]="'btn btn-primary btn-xs'" [style.color]="sidebar_color" [cpPosition]="'bottom'"
+                  [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"></i>
+              </li>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <button type="button" class="btn btn-sm btn-dark "
+                (click)="changeTheme('sidebar_color',sidebar_color)">Save</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-9">
+              <li class=" list-group-item d-flex justify-content-between align-items-center">Send Message Color<i
+                  class="cur-pointer mdi mdi-brush mdi-24px" [(colorPicker)]="send_msg_color" [cpCancelButton]="true"
+                  [cpCancelButtonClass]="'btn btn-primary btn-xs'" [style.color]="send_msg_color"
+                  [cpPosition]="'bottom'" [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"></i>
+              </li>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <button type="button" class="btn btn-sm btn-dark "
+                (click)="changeTheme('send_msg_color',send_msg_color)">Save</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-9">
+              <li class=" list-group-item d-flex justify-content-between align-items-center">Rec Message Color<i
+                  class="cur-pointer mdi mdi-brush mdi-24px" [(colorPicker)]="rec_msg_color" [cpCancelButton]="true"
+                  [cpCancelButtonClass]="'btn btn-primary btn-xs'" [style.color]="rec_msg_color" [cpPosition]="'bottom'"
+                  [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"></i>
+              </li>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <button type="button" class="btn btn-sm btn-dark "
+                (click)="changeTheme('rec_msg_color',rec_msg_color)">Save</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-9">
+              <li class=" list-group-item d-flex justify-content-between align-items-center">Text Color<i
+                  class="cur-pointer mdi mdi-brush mdi-24px" [(colorPicker)]="text_color" [cpCancelButton]="true"
+                  [cpCancelButtonClass]="'btn btn-primary btn-xs'" [style.color]="text_color" [cpPosition]="'bottom'"
+                  [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"></i>
+              </li>
+            </div>
+            <div class="col-3 d-flex align-items-center">
+              <button type="button" class="btn btn-sm btn-dark "
+                (click)="changeTheme('text_color',text_color)">Save</button>
+            </div>
+          </div>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
